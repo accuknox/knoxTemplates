@@ -35,3 +35,4 @@ else
 	printf "${RED}Issue number format [$issuenum] is incorrect.${NC}\n"
 	exit 1
 fi
+exit 0
