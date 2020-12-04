@@ -25,3 +25,11 @@ if [ $? -ne 0 ]; then
 	printf "${RED}No \"Fixes: #ISSUE-NUM\" found in the commit msg. It is mandatory to reference the issue against which the commit is done.${NC}\n"
 	exit 1
 fi
+
+issuenum=`sed -n 's/^Fixes: *#\([0-9]*\)/\1/p' "$1"`
+if [ -n "$issuenum" ] && [ "$issuenum" -eq "$issuenum" ]; then
+	# gh is installed as part of knoxTemplates->install.sh repo
+	gh issue view $issuenum 2>/dev/null | head -2 | grep "^state:.*OPEN" > /dev/null
+	[[ $? -ne 0 ]] && printf "${RED}Could not find an OPEN issue #$issuenum on the repo.${NC}\n"
+	exit 1
+fi
