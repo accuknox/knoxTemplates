@@ -20,6 +20,8 @@ install_latest_templates()
 chkbasic()
 {
 	[[ ! -d ".git" ]] && echo "You need to execute this from the base dir of your repo." && exit 1
+	git remote -v 2>&1 >/dev/null
+	[[ $? -ne 0 ]] && echo "Execute this script from the base dir of your repo." && exit 1
 
 	which git 2>&1 >/dev/null
 	[[ $? -ne 0 ]] && echo "git cmd not found." && exit 1
