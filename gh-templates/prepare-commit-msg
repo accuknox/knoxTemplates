@@ -37,7 +37,7 @@ if [ "$2" != "" ]; then
 	DIR=`dirname "$0"`
 	$DIR/commit-msg "$CMSG"
 	if [ $? -ne 0 ]; then
-		printf "Commit msg not in right format"
+		echo "Commit msg not in right format"
 		exit 1
 	fi
 else
