@@ -7,7 +7,7 @@ Knox-wide repo scripts and github-hooks templates to be used by all developers.
 * Setup other knox-specific utility scripts (for e.g, for code-formatting etc
 
 ### Installation
-cd <repo-base-dir>
+Ensure you are in your repo's base dir.
 ```
 bash <(curl -s https://raw.githubusercontent.com/accuknox/knoxTemplates/master/install.sh)
 ```
