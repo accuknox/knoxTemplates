@@ -27,7 +27,7 @@ if [ $? -ne 0 ]; then
 fi
 
 issuenum=`sed -n 's/^Fixes: *#\([0-9]*\)/\1/p' "$1"`
-if [ -n "$issuenum" ] && [ "$issuenum" -eq "$issuenum" ]; then
+if [ -n "$issuenum" ] && [ "$issuenum" -eq "$issuenum" ] 2>/dev/null; then
 	# gh is installed as part of knoxTemplates->install.sh repo
 	gh issue view $issuenum 2>/dev/null | head -2 | grep "^state:.*OPEN" > /dev/null
 	[[ $? -ne 0 ]] && printf "${RED}Could not find an OPEN issue #$issuenum on the repo.${NC}\n"

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # An example hook script to prepare the commit log message.
 # Called by "git commit" with the name of the file that has the
@@ -31,7 +31,18 @@ if [ $? -eq 0 ]; then
 	exit 0
 fi
 
-sed -i "1s/^/SUBMODULE: commit_title\n\nDescription\n\nFixes: #NUM\n/" "$COMMIT_MSG_FILE"
+if [ "$2" != "" ]; then
+	CMSG=/tmp/commit_msg_$$
+	echo "$2" > $CMSG
+	DIR=`dirname "$0"`
+	$DIR/commit-msg "$CMSG"
+	if [ $? -ne 0 ]; then
+		printf "Commit msg not in right format"
+		exit 1
+	fi
+else
+	sed -i "1s/^/SUBMODULE: commit_title\n\nDescription\n\nFixes: #NUM\n/" "$COMMIT_MSG_FILE"
+fi
 
 # case "$COMMIT_SOURCE,$SHA1" in
 #  ,|template,)
