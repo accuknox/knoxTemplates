@@ -1,12 +1,18 @@
 #!/bin/bash
 
-TMP=/tmp/knoxTemplates
 
-[[ $(id -u) -ne 0 ]] && echo "Please sudo to execute this. Bye." && exit 1
+install_latest_templates()
+{
+	TMP=/tmp/knoxTemplates
+	export GIT_TEMPLATE_DIR=$HOME/.git/templates/hooks
+	mkdir -p $GIT_TEMPLATE_DIR 2>/dev/null
 
-git clone https://github.com/accuknox/knoxTemplates.git $TMP
+	rm -rf $TMP
+	[[ ! -d $TMP ]] && git clone https://github.com/accuknox/knoxTemplates.git $TMP
+	cd $TMP
+	cp gh-templates/* $GIT_TEMPLATE_DIR
+	cd -
+}
 
-cd $TMP
-cp gh-templates/* /usr/share/git-core/templates/hooks/
-
-rm -rf $TMP
+install_latest_templates
+git init
