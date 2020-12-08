@@ -26,12 +26,38 @@ if [ $? -ne 0 ]; then
 	exit 1
 fi
 
+chk_remote()
+{
+	TMP=/tmp/gh-template-$$
+
+	GH_REPO=$url gh issue view $1 2>/dev/null > $TMP
+	[[ $? -ne 0 ]] && return 1
+
+	grep "^state:.*OPEN" $TMP > /dev/null
+	[[ $? -ne 0 ]] && return 1
+
+	title=`grep "^title:" $TMP | cut -f 2`
+	printf "Found ${GREEN}#$1: $title${NC}\n"
+}
+
+chk_if_issue_present()
+{
+	chk_remote $1 upstream
+	[[ $? -eq 0 ]] && return 0
+
+	for remote in `git remote -v  | awk '{ print $1 }' | sort | uniq`; do
+		[[ "$remote" == "upstream" ]] && continue
+		chk_remote $1 $remote
+		[[ $? -eq 0 ]] && return 0
+	done
+	return 1
+}
+
 issuenum=`sed -n 's/^Fixes: *#\([0-9]*\)/\1/p' "$1"`
 if [ -n "$issuenum" ] && [ "$issuenum" -eq "$issuenum" ] 2>/dev/null; then
 	# gh is installed as part of knoxTemplates->install.sh repo
-	# gh issue view $issuenum 2>/dev/null | head -2 | grep "^state:.*OPEN" > /dev/null
-	# [[ $? -ne 0 ]] && printf "${RED}Could not find an OPEN issue #$issuenum on the repo.${NC}\n" && exit 1
-	echo ;
+	chk_if_issue_present $issuenum
+	[[ $? -ne 0 ]] && printf "${RED}Could not find an OPEN issue #$issuenum.${NC}\n" && exit 1
 else
 	printf "${RED}Issue number format [$issuenum] is incorrect.${NC}\n"
 	exit 1
